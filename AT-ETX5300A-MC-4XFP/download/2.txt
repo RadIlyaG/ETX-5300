@@ -1,0 +1,21 @@
+exit all
+configure
+slot 1 shutdown
+slot 2 shutdown
+slot 3 shutdown
+slot 4 shutdown
+
+exit all
+configure
+slot 1 no shutdown
+slot 2 no shutdown
+slot 3 no shutdown
+slot 4 no shutdown
+
+
+
+
+
+
+
+

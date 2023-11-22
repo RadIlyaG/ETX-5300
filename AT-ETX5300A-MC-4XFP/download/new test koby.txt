@@ -1,0 +1,275 @@
+#********************card type****************************************
+
+
+configure slot 1
+card-type eth 10g-2-xfp
+no shutdown
+exit all
+
+configure slot 2 
+card-type eth 10g-2-xfp
+no shutdown
+exit all
+
+configure slot 3
+card-type eth 10g-2-xfp
+no shutdown
+exit all
+
+configure slot 4 
+card-type eth 10g-2-xfp
+no shutdown
+exit all
+
+#************************************************************************
+#****************************IO-1_to_MC-A/1******************************
+#***************************General_Traffic******************************
+#************************************************************************
+exit all
+#***************************TM_QUEUE_GROUP*******************************
+config port ethernet main-a/1 queue-group profile q_group_2_level_default
+config port ethernet main-a/2 queue-group profile q_group_2_level_default
+config port ethernet main-a/3 queue-group profile q_group_2_level_default
+config port ethernet main-a/4 queue-group profile q_group_2_level_default
+config port ethernet main-b/1 queue-group profile q_group_2_level_default
+config port ethernet main-b/2 queue-group profile q_group_2_level_default
+config port ethernet main-b/3 queue-group profile q_group_2_level_default
+config port ethernet main-b/4 queue-group profile q_group_2_level_default
+config port ethernet 1/1 queue-group profile q_group_2_level_default
+config port ethernet 1/2 queue-group profile q_group_2_level_default
+config port ethernet 3/2 queue-group profile q_group_2_level_default
+config port ethernet 4/1 queue-group profile q_group_2_level_default
+config port ethernet 2/1 queue-group profile q_group_2_level_default
+config port ethernet 2/2 queue-group profile q_group_2_level_default
+config port ethernet 3/1 queue-group profile q_group_2_level_default
+config port ethernet 4/2 queue-group profile q_group_2_level_default
+config port sag 1/1 queue-group profile q_group_SAG_2_level_default
+config port sag 1/2 queue-group profile q_group_SAG_2_level_default
+config port sag 2/1 queue-group profile q_group_SAG_2_level_default
+config port sag 2/2 queue-group profile q_group_SAG_2_level_default
+config port sag 3/1 queue-group profile q_group_SAG_2_level_default
+config port sag 3/2 queue-group profile q_group_SAG_2_level_default
+config port sag 4/1 queue-group profile q_group_SAG_2_level_default
+config port sag 4/2 queue-group profile q_group_SAG_2_level_default
+exit all
+config port ethernet main-a/1 no shutdown
+config port ethernet main-a/2 no shutdown
+config port ethernet main-a/3 no shutdown
+config port ethernet main-a/4 no shutdown
+config port ethernet main-b/1 no shutdown
+config port ethernet main-b/2 no shutdown
+config port ethernet main-b/3 no shutdown
+config port ethernet main-b/4 no shutdown
+exit all
+config port ethernet 1/1 no shutdown
+config port ethernet 1/2 no shutdown
+config port ethernet 3/1 no shutdown
+config port ethernet 4/1 no shutdown
+
+config port ethernet 2/1 no shutdown
+config port ethernet 2/2 no shutdown
+config port ethernet 3/2 no shutdown
+config port ethernet 4/2 no shutdown
+exit all
+
+#***************************CLASSIFIER_PROFILE for TM tests *************
+config flows classifier-profile classall match-any
+match all 
+exit all
+config flows classifier-profile slot1 match-any
+match vlan 100 
+exit all
+
+
+
+#*********************************END************************************
+
+#***************************FLOW_CONFIGURATION***************************
+
+#***************Traffic from PORT main-1 to main-2 via eth 1/1 to 2/1**************
+
+configure flows flow 1
+classifier slot1
+ingress-port ethernet main-a/1
+egress-port ethernet 1/1 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+configure flows flow 2
+classifier slot1
+ingress-port ethernet 2/1
+egress-port sap 2/1/1 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+configure flows flow 3
+classifier classall
+ingress-port sap 2/1/1
+egress-port ethernet main-a/2 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+
+#***************Traffic from PORT main-2 to main-1 via eth 2/1 to 1/1**************
+
+configure flows flow 4
+classifier slot1
+ingress-port ethernet main-a/2
+egress-port ethernet 2/1 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+configure flows flow 5
+classifier slot1
+ingress-port ethernet 1/1
+egress-port sap 1/1/1 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+configure flows flow 6
+classifier classall
+ingress-port sap 1/1/1
+egress-port ethernet main-a/1 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+#***************Traffic from PORT main-1 to main-2 via eth 1/2 to 2/2**************
+
+configure flows flow 7
+classifier slot1
+ingress-port ethernet main-a/3
+egress-port ethernet 1/2 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+configure flows flow 8
+classifier slot1
+ingress-port ethernet 2/2
+egress-port sap 2/2/2 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+configure flows flow 9
+classifier classall
+ingress-port sap 2/2/2
+egress-port ethernet main-a/4 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+
+#***************Traffic from PORT main-2 to main-1 via eth 2/2 to 1/2**************
+
+configure flows flow 10
+classifier slot1
+ingress-port ethernet main-a/4
+egress-port ethernet 2/2 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+configure flows flow 11
+classifier slot1
+ingress-port ethernet 1/2
+egress-port sap 1/2/2 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+configure flows flow 12
+classifier classall
+ingress-port sap 1/2/2
+egress-port ethernet main-a/3 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+#***************Traffic from PORT main-1 to main-2 via eth 1/3 to 2/3**************
+
+configure flows flow 13
+classifier slot1
+ingress-port ethernet main-b/1
+egress-port ethernet 3/1 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+configure flows flow 14
+classifier slot1
+ingress-port ethernet 4/1
+egress-port sap 4/1/1 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+configure flows flow 15
+classifier classall
+ingress-port sap 4/1/1
+egress-port ethernet main-b/2 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+
+#***************Traffic from PORT main-2 to main-1 via eth 2/3 to 1/3**************
+
+configure flows flow 16
+classifier slot1
+ingress-port ethernet main-b/2
+egress-port ethernet 4/1 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+configure flows flow 17
+classifier slot1
+ingress-port ethernet 3/1
+egress-port sap 3/1/1 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+configure flows flow 18
+classifier classall
+ingress-port sap 3/1/1
+egress-port ethernet main-b/1 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+
+#***************Traffic from PORT main-1 to main-2 via eth 1/4 to 2/4**************
+
+configure flows flow 19
+classifier slot1
+ingress-port ethernet main-b/3
+egress-port ethernet 3/2 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+configure flows flow 20
+classifier slot1
+ingress-port ethernet 4/2
+egress-port sap 4/2/2 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+configure flows flow 21
+classifier classall
+ingress-port sap 4/2/2
+egress-port ethernet main-b/4 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+
+#***************Traffic from PORT main-2 to main-1 via eth 2/4 to 1/4**************
+
+configure flows flow 22
+classifier slot1
+ingress-port ethernet main-b/4
+egress-port ethernet 4/2 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+configure flows flow 23
+classifier slot1
+ingress-port ethernet 3/2
+egress-port sap 3/2/2 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+configure flows flow 24
+classifier classall
+ingress-port sap 3/2/2
+egress-port ethernet main-b/3 queue-map-profile QueueMapDefaultProfile block 0/1
+no shutdown
+exit all
+
+
+#***************end********************************************************************
+
+
+
+
+#****************************steup test************************************************
+
+# 2x main
+# 4x 2x10
+# loop 1/1 & 2/1
+# loop 1/2 & 2/2
+# loop 3/1 & 4/1
+# loop 3/2 & 4/2
+# loop a/1 & b2
+# lopp  a/2 & a3
+# loop a/4 & b3
+#  b/1 gen
+#  b4 gen
+
+#**************************end steup******************************************************

@@ -1,0 +1,136 @@
+
+
+config port ethernet main-a/1 queue-group profile q_group_2_level_default
+config port ethernet main-a/2 queue-group profile q_group_2_level_default
+config port ethernet main-a/3 queue-group profile q_group_2_level_default
+config port ethernet main-a/4 queue-group profile q_group_2_level_default
+exit all
+
+configure terminal timeout forever
+exit all
+config port  mng-ethernet main-a/0
+shutdown
+exit all
+config port  mng-ethernet main-b/0
+shutdown
+exit all
+
+config port 
+ethernet main-a/1
+no shutdown
+exit
+ethernet main-a/2
+no shutdown
+exit
+ethernet main-a/3
+no shutdown
+exit
+ethernet main-a/4
+no shutdown
+exit all
+
+config flows classifier-profile 10 match-any
+match vlan 10
+exit all
+config flows classifier-profile 11 match-any
+match vlan 11
+exit all
+
+config port svi 1 bridge
+exit all
+config port svi 2 bridge
+exit all
+config port svi 3 bridge 
+exit all
+config port svi 4 bridge 
+exit all
+
+config bridge 1 port 1 
+bind svi 1
+no shutdown
+exit all
+
+config bridge 1 port 2 
+bind svi 2
+no shutdown
+exit all
+
+config bridge 1 port 3 
+bind svi 3
+no shutdown
+exit all
+
+config bridge 1 port 4 
+bind svi 4
+no shutdown
+exit all
+
+config bridge 1 
+
+    vlan 10
+      tagged-egress 1..2
+    exit 
+
+    vlan 11
+      tagged-egress 3..4
+    exit all
+
+config flows flow 1
+   
+        classifier "10"
+        ingress-port ethernet main-a/1
+        egress-port svi 1
+        no shutdown
+    exit
+    
+    flow "2"
+        classifier "10"
+        ingress-port ethernet main-a/2
+        egress-port svi 2
+        no shutdown
+    exit
+
+      flow "3"
+        classifier "11"
+         ingress-port ethernet main-a/3
+        egress-port svi 3
+        no shutdown
+    exit
+
+flow "4"
+        classifier "11"
+         ingress-port ethernet main-a/4
+        egress-port svi 4
+        no shutdown
+    exit
+
+     flow 1_1
+        classifier "10"
+        ingress-port svi 1
+        egress-port ethernet main-a/1 queue-map-profile "QueueMapDefaultProfile"block 0/1
+        no shutdown
+    exit
+
+    flow 2_2
+        classifier "10"
+        ingress-port svi 2
+        egress-port ethernet main-a/2 queue-map-profile "QueueMapDefaultProfile"block 0/1
+        no shutdown
+    exit
+
+    flow 3_3
+        classifier "11"
+        ingress-port svi 3
+        egress-port ethernet main-a/3 queue-map-profile "QueueMapDefaultProfile"block 0/1
+        no shutdown
+    exit 
+
+
+
+flow 4_4
+        classifier "11"
+        ingress-port svi 4
+        egress-port ethernet main-a/4 queue-map-profile "QueueMapDefaultProfile"block 0/1
+        no shutdown
+    exit 
+

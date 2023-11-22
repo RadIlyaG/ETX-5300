@@ -1,0 +1,31 @@
+#   Classifier Profile Configuration
+    classifier-profile "all" match-any
+        match all
+    exit
+    echo "Flow Configuration"
+#   Flow Configuration
+    flow "1"
+        classifier "all"
+        ingress-port ethernet 1
+        egress-port ethernet 5 queue 0 block 0/1
+        no shutdown
+    exit
+    flow "2"
+        classifier "all"
+        ingress-port ethernet 5
+        egress-port ethernet 1 queue 0 block 0/1
+        no shutdown
+
+    exit
+    flow "3"
+        classifier "all"
+        ingress-port ethernet 3
+        egress-port ethernet 8 queue 0 block 0/1
+        no shutdown
+    exit
+    flow "4"
+        classifier "all"
+        ingress-port ethernet 8
+        egress-port ethernet 3 queue 0 block 0/1
+        no shutdown
+    exit
