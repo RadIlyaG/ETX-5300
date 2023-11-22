@@ -170,3 +170,4 @@ proc ReadBarcode {} {
   }    
   return $ret
 }
+
